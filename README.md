@@ -1,7 +1,6 @@
 # doublechecker
 Double Checking Calculator for NZ Pharmacy Practice
-# doublechecker
-Double Checking Calculator for NZ Pharmacy Practice
+
 
 
 # 🏥 Pharmacy Double Checking Calculator
