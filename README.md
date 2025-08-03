@@ -159,9 +159,7 @@ All dosing information is sourced from the **New Zealand Formulary for Children 
 ## 📞 Support
 
 ### For Technical Issues
-- Email: suggestions@pharmacy-calculator.com
-- Report bugs or request features
-- Provide feedback on usability
+- DM me through Whatsapp or FB.
 
 ### For Clinical Questions
 - Consult NZF guidelines directly
