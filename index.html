@@ -11,6 +11,105 @@
             box-sizing: border-box;
         }
 
+        function calculateCetirizine() {
+            const age = document.getElementById('cetirizine_age').value;
+            const volume = parseFloat(document.getElementById('cetirizine_volume').value);
+            const resultDiv = document.getElementById('cetirizine_result');
+            
+            let result = '';
+            
+            // Forward calculation
+            if (age) {
+                let doseInfo = '';
+                
+                switch(age) {
+                    case '6-11months':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 6-11 months<br>`;
+                        result += `Dose: 2.5 mg once daily<br>`;
+                        result += `Volume: 2.5 mL<br><br>`;
+                        break;
+                    case '12-23months':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 12-23 months<br>`;
+                        result += `Dose range: 2.5 - 5.0 mg daily<br>`;
+                        result += `Volume range: 2.5 - 5.0 mL<br>`;
+                        result += `<em>2.5 mg once daily, increased to max 2.5 mg twice daily as required</em><br><br>`;
+                        break;
+                    case '2-5years':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 2-5 years<br>`;
+                        result += `Dose range: 2.5 - 5.0 mg daily<br>`;
+                        result += `Volume range: 2.5 - 5.0 mL<br>`;
+                        result += `<em>2.5 mg once daily, increased to max 5 mg daily in 1-2 divided doses</em><br><br>`;
+                        break;
+                    case '6-11years':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 6-11 years<br>`;
+                        result += `Dose range: 5.0 - 10.0 mg once daily<br>`;
+                        result += `Volume range: 5.0 - 10.0 mL<br>`;
+                        result += `<em>Depending on symptom severity</em><br><br>`;
+                        break;
+                    case '12-18years':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 12-18 years<br>`;
+                        result += `Dose range: 5.0 - 10.0 mg once daily<br>`;
+                        result += `Volume range: 5.0 - 10.0 mL<br>`;
+                        result += `<em>Depending on symptom severity; usual starting dose is 10 mg</em><br><br>`;
+                        break;
+                }
+            }
+            
+            // Reverse calculation
+            if (volume && volume > 0) {
+                const doseMg = volume; // 1mg/mL concentration
+                let possibleAges = [];
+                
+                // Check which age groups could match this dose
+                if (doseMg === 2.5) {
+                    possibleAges.push('6-11 months (2.5 mg daily)');
+                    possibleAges.push('12-23 months (2.5 mg daily - minimum)');
+                    possibleAges.push('2-5 years (2.5 mg daily - minimum)');
+                }
+                if (doseMg === 5.0) {
+                    possibleAges.push('12-23 months (5 mg daily - maximum)');
+                    possibleAges.push('2-5 years (5 mg daily - maximum)');
+                    possibleAges.push('6-11 years (5 mg daily - minimum)');
+                    possibleAges.push('12-18 years (5 mg daily - minimum)');
+                }
+                if (doseMg === 10.0) {
+                    possibleAges.push('6-11 years (10 mg daily - maximum)');
+                    possibleAges.push('12-18 years (10 mg daily - usual starting dose)');
+                }
+                if (doseMg > 2.5 && doseMg < 5.0) {
+                    possibleAges.push('12-23 months (within 2.5-5 mg range)');
+                    possibleAges.push('2-5 years (within 2.5-5 mg range)');
+                }
+                if (doseMg > 5.0 && doseMg < 10.0) {
+                    possibleAges.push('6-11 years (within 5-10 mg range)');
+                    possibleAges.push('12-18 years (within 5-10 mg range)');
+                }
+                
+                result += `<strong>Reverse calculation:</strong><br>`;
+                result += `Volume given: ${volume} mL<br>`;
+                result += `Dose: ${doseMg} mg<br>`;
+                
+                if (possibleAges.length > 0) {
+                    result += `<strong>Possible age groups:</strong><br>`;
+                    possibleAges.forEach(age => {
+                        result += `• ${age}<br>`;
+                    });
+                } else {
+                    result += `<em>Dose does not match standard cetirizine dosing guidelines</em>`;
+                }
+            }
+            
+            if (result) {
+                resultDiv.innerHTML = result;
+                resultDiv.style.display = 'block';
+            }
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
@@ -923,6 +1022,7 @@
                         <label for="other-select">Select Medication:</label>
                         <select id="other-select" onchange="showMedicationForm('other', this.value)">
                             <option value="">Choose medication...</option>
+                            <option value="cetirizine">Cetirizine 1mg/mL</option>
                             <option value="prednisolone">Prednisolone 5mg/1mL</option>
                             <option value="lactulose">Lactulose</option>
                             <option value="loratadine">Loratadine 1mg/1mL</option>
@@ -930,6 +1030,40 @@
                             <option value="ferrous-sulphate">Ferrous sulphate 30mg/1mL</option>
                             <option value="colecalciferol">Colecalciferol (Vitamin D) 188mcg/mL</option>
                         </select>
+                    </div>
+
+                    <!-- Cetirizine Form -->
+                    <div id="cetirizine-form" class="calculator-form">
+                        <h3>Cetirizine 1mg/mL Calculator</h3>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label>Child's age:</label>
+                                <select id="cetirizine_age">
+                                    <option value="">Select age group...</option>
+                                    <option value="6-11months">6-11 months</option>
+                                    <option value="12-23months">12-23 months</option>
+                                    <option value="2-5years">2-5 years</option>
+                                    <option value="6-11years">6-11 years</option>
+                                    <option value="12-18years">12-18 years</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Reverse calculation - Volume given (mL):</label>
+                                <input type="number" id="cetirizine_volume" step="0.1" min="0" placeholder="Enter volume in mL">
+                            </div>
+                        </div>
+                        <button class="calculate-btn" onclick="calculateCetirizine()">Calculate </button>
+                        <div id="cetirizine_result" class="calculation-result"></div>
+                        <div class="medication-info">
+                            <h4>Dosing Information:</h4>
+                            <p><strong>Oral liquid hydrochloride 1 mg/mL</strong></p>
+                            <p><strong>Child 6–11 months:</strong> 2.5 mg once daily</p>
+                            <p><strong>Child 12–23 months:</strong> 2.5 mg once daily, increased to a maximum of 2.5 mg twice daily as required</p>
+                            <p><strong>Child 2–5 years:</strong> 2.5 mg once daily, increased to a maximum of 5 mg daily in 1 or 2 divided doses</p>
+                            <p><strong>Child 6–11 years:</strong> 5–10 mg once daily depending on symptom severity</p>
+                            <p><strong>Child 12–18 years:</strong> 5–10 mg once daily depending on symptom severity; usual starting dose is 10 mg</p>
+                            <a href="https://nzfchildren.org.nz/nzfc_1840" class="nzf-link" target="_blank">NZF Reference</a>
+                        </div>
                     </div>
 
                     <!-- Prednisolone Form -->
@@ -991,12 +1125,14 @@
                         <h3>Loratadine 1mg/1mL Calculator</h3>
                         <div class="form-row">
                             <div class="input-group">
-                                <label>Child's age (years):</label>
-                                <input type="number" id="loratadine_age" step="1" min="1" max="18">
-                            </div>
-                            <div class="input-group">
-                                <label>Child's weight (kg) (for 2-12 years):</label>
-                                <input type="number" id="loratadine_weight" step="0.1" min="0">
+                                <label>Age/weight category:</label>
+                                <select id="loratadine_category">
+                                    <option value="">Select category...</option>
+                                    <option value="1-2years">1-2 years (2.5 mg)</option>
+                                    <option value="2-12under30">2-12 years under 30kg (5 mg)</option>
+                                    <option value="2-12over30">2-12 years over 30kg (10 mg)</option>
+                                    <option value="12-18years">12-18 years (10 mg)</option>
+                                </select>
                             </div>
                             <div class="input-group">
                                 <label>Reverse calculation - Volume given (mL):</label>
@@ -1054,10 +1190,10 @@
                                 <input type="number" id="ferrous_weight" step="0.1" min="0">
                             </div>
                             <div class="input-group">
-                                <label>Dose (mg/kg):</label>
+                                <label>Dose (mL/kg):</label>
                                 <select id="ferrous_dose">
-                                    <option value="0.5">0.5 mg/kg (minimum)</option>
-                                    <option value="1">1 mg/kg (maximum)</option>
+                                    <option value="0.5">0.5 mL/kg (minimum)</option>
+                                    <option value="1">1 mL/kg (maximum)</option>
                                 </select>
                             </div>
                             <div class="input-group">
@@ -1069,6 +1205,7 @@
                         <div id="ferrous_result" class="calculation-result"></div>
                         <div class="medication-info">
                             <h4>Dosing Information:</h4>
+                            <p><strong>Oral liquid (30 mg/mL—equivalent to 6 mg/mL elemental iron)</strong></p>
                             <p><strong>Child 1 month - 12 years:</strong> 0.5-1 mL/kg daily up to maximum 30 mL daily in 2-3 divided doses</p>
                             <p><strong>Child 12 - 18 years:</strong> 15-30 mL daily in 1-2 divided doses</p>
                             <a href="https://nzfchildren.org.nz/nzf_4915" class="nzf-link" target="_blank">NZF Reference</a>
@@ -1181,7 +1318,7 @@
 
         <!-- Footer -->
         <div style="background: #f1f8e9; padding: 20px; text-align: center; border-top: 2px solid #c8e6c9; color: #2d5016; font-size: 0.9em;">
-            <p></p>
+          <p> Built with ❤️ for pharmacy professionals.  <strong>Always verify dosing with current NZF guidelines and clinical judgment.</strong>  Last updated 04/08/2025 </p>    
         </div>
     </div>
 
@@ -2172,52 +2309,70 @@
         }
 
         function calculateLoratadine() {
-            const age = parseFloat(document.getElementById('loratadine_age').value);
-            const weight = parseFloat(document.getElementById('loratadine_weight').value);
+            const category = document.getElementById('loratadine_category').value;
             const volume = parseFloat(document.getElementById('loratadine_volume').value);
             const resultDiv = document.getElementById('loratadine_result');
-            
+    
             let result = '';
             let doseMg = 0;
-            let doseDescription = '';
-            
-            if (age && age > 0) {
-                if (age >= 1 && age < 2) {
-                    doseMg = 2.5;
-                    doseDescription = '2.5 mg (1-2 years)';
-                } else if (age >= 2 && age < 12) {
-                    if (weight && weight < 30) {
+            let categoryDescription = '';
+    
+            if (category) {
+                switch(category) {
+                    case '1-2years':
+                        doseMg = 2.5;
+                        categoryDescription = '1-2 years';
+                        break;
+                    case '2-12under30':
                         doseMg = 5;
-                        doseDescription = '5 mg (2-12 years, under 30kg)';
-                    } else if (weight && weight >= 30) {
+                        categoryDescription = '2-12 years under 30kg';
+                        break;
+                    case '2-12over30':
                         doseMg = 10;
-                        doseDescription = '10 mg (2-12 years, over 30kg)';
-                    } else {
-                        result += '<div class="warning">Please enter weight for 2-12 year olds</div>';
-                    }
-                } else if (age >= 12 && age <= 18) {
-                    doseMg = 10;
-                    doseDescription = '10 mg (12-18 years)';
-                }
-                
-                if (doseMg > 0) {
-                    const volumeMl = doseMg;
-                    result += `<strong>Forward calculation:</strong><br>`;
-                    result += `Age: ${age} years<br>`;
-                    if (weight) result += `Weight: ${weight} kg<br>`;
-                    result += `Dose: ${doseMg} mg (${doseDescription})<br>`;
-                    result += `Volume: ${volumeMl} mL<br><br>`;
-                }
+                        categoryDescription = '2-12 years over 30kg';
+                        break;
+                    case '12-18years':
+                        doseMg = 10;
+                        categoryDescription = '12-18 years';
+                        break;
+                }        
+        
+                const volumeMl = doseMg;
+                result += `<strong>Forward calculation:</strong><br>`;
+                result += `Category: ${categoryDescription}<br>`;
+                result += `Dose: ${doseMg} mg<br>`;
+                result += `Volume: ${volumeMl} mL<br><br>`;
             }
-            
+    
             if (volume && volume > 0) {
                 const doseMg = volume;
+                let possibleCategories = [];
+        
+                if (doseMg === 2.5) {
+                    possibleCategories.push('1-2 years');
+                }
+                if (doseMg === 5) {
+                    possibleCategories.push('2-12 years under 30kg');
+                }
+                if (doseMg === 10) {
+                    possibleCategories.push('2-12 years over 30kg');
+                    possibleCategories.push('12-18 years');
+                }
+        
                 result += `<strong>Reverse calculation:</strong><br>`;
                 result += `Volume given: ${volume} mL<br>`;
                 result += `Dose: ${doseMg} mg<br>`;
-                result += `Age guidance: 2.5mg=1-2yrs, 5mg=2-12yrs (<30kg), 10mg=2-12yrs (>30kg) or 12-18yrs`;
+        
+                if (possibleCategories.length > 0) {
+                    result += `<strong>Possible categories:</strong><br>`;
+                    possibleCategories.forEach(cat => {
+                        result += `• ${cat}<br>`;
+                    });
+                } else {
+                    result += `<em>Dose does not match standard loratadine dosing guidelines</em>`;
+                }
             }
-            
+    
             if (result) {
                 resultDiv.innerHTML = result;
                 resultDiv.style.display = 'block';
@@ -2268,51 +2423,40 @@
             
             if (weight && weight > 0) {
                 if (dosePerKg === 0.5) {
-                    // Show range for 0.5 mg/kg option
-                    const minDose = weight * 0.5;
-                    const maxDose = weight * 1;
-                    let minVolume = minDose / 30;
-                    let maxVolume = maxDose / 30;
-                    
-                    // Apply maximum limits
-                    if (weight < 12 * 12) {
-                        minVolume = Math.min(minVolume, 30);
-                        maxVolume = Math.min(maxVolume, 30);
-                    } else {
-                        minVolume = Math.min(minVolume, 30);
-                        maxVolume = Math.min(maxVolume, 30);
-                    }
+                    // Show range for 0.5 mL/kg option
+                    const minVolume = Math.min(weight * 0.5, 30); // 0.5 mL/kg, max 30mL
+                    const maxVolume = Math.min(weight * 1, 30);   // 1 mL/kg, max 30mL
+                    const minDose = minVolume * 30; // 30mg/mL concentration
+                    const maxDose = maxVolume * 30;
                     
                     result += `<strong>Forward calculation:</strong><br>`;
                     result += `Weight: ${weight} kg<br>`;
-                    result += `Dose range: ${minDose.toFixed(1)} - ${maxDose.toFixed(1)} mg (0.5-1 mg/kg)<br>`;
-                    result += `Volume range: ${minVolume.toFixed(1)} - ${maxVolume.toFixed(1)} mL<br><br>`;
+                    result += `Volume range: ${minVolume.toFixed(1)} - ${maxVolume.toFixed(1)} mL (0.5-1 mL/kg)<br>`;
+                    result += `Dose range: ${minDose.toFixed(1)} - ${maxDose.toFixed(1)} mg ferrous sulphate<br>`;
+                    result += `Elemental iron: ${(minDose/5).toFixed(1)} - ${(maxDose/5).toFixed(1)} mg<br><br>`;
                 } else {
-                    // Show specific dose for 1 mg/kg option
-                    const doseMg = weight * 1;
-                    let volumeMl = doseMg / 30;
-                    
-                    if (weight < 12 * 12) {
-                        volumeMl = Math.min(volumeMl, 30);
-                    } else {
-                        volumeMl = Math.min(volumeMl, 30);
-                    }
+                    // Show specific dose for 1 mL/kg option
+                    const volumeMl = Math.min(weight * 1, 30); // 1 mL/kg, max 30mL
+                    const doseMg = volumeMl * 30; // 30mg/mL concentration
                     
                     result += `<strong>Forward calculation:</strong><br>`;
                     result += `Weight: ${weight} kg<br>`;
-                    result += `Dose: ${doseMg.toFixed(1)} mg (1 mg/kg - maximum)<br>`;
-                    result += `Volume: ${volumeMl.toFixed(1)} mL<br><br>`;
+                    result += `Volume: ${volumeMl.toFixed(1)} mL (1 mL/kg - maximum)<br>`;
+                    result += `Dose: ${doseMg.toFixed(1)} mg ferrous sulphate<br>`;
+                    result += `Elemental iron: ${(doseMg/5).toFixed(1)} mg<br><br>`;
                 }
             }
             
             if (volume && volume > 0) {
-                const doseMg = volume * 30;
-                const minWeight = doseMg / 1;
-                const maxWeight = doseMg / 0.5;
+                const doseMg = volume * 30; // 30mg/mL ferrous sulphate
+                const elementalIron = doseMg / 5; // 6mg/mL elemental iron = 30mg/5
+                const minWeight = volume / 1;  // Using max dose for min weight
+                const maxWeight = volume / 0.5; // Using min dose for max weight
                 result += `<strong>Reverse calculation:</strong><br>`;
                 result += `Volume given: ${volume} mL<br>`;
-                result += `Dose: ${doseMg.toFixed(1)} mg<br>`;
-                result += `Estimated weight range: ${minWeight.toFixed(1)} - ${maxWeight.toFixed(1)} kg (for 0.5-1 mg/kg range)`;
+                result += `Dose: ${doseMg.toFixed(1)} mg ferrous sulphate<br>`;
+                result += `Elemental iron: ${elementalIron.toFixed(1)} mg<br>`;
+                result += `Estimated weight range: ${minWeight.toFixed(1)} - ${maxWeight.toFixed(1)} kg (for 0.5-1 mL/kg range)`;
             }
             
             if (result) {
@@ -2430,6 +2574,105 @@
             
             resultDiv.innerHTML = result;
             resultDiv.style.display = 'block';
+        }
+
+        function calculateCetirizine() {
+            const age = document.getElementById('cetirizine_age').value;
+            const volume = parseFloat(document.getElementById('cetirizine_volume').value);
+            const resultDiv = document.getElementById('cetirizine_result');
+            
+            let result = '';
+            
+            // Forward calculation
+            if (age) {
+                switch(age) {
+                    case '6-11months':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 6-11 months<br>`;
+                        result += `Dose: 2.5 mg once daily<br>`;
+                        result += `Volume: 2.5 mL<br><br>`;
+                        break;
+                    case '12-23months':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 12-23 months<br>`;
+                        result += `Dose range: 2.5 - 5.0 mg daily<br>`;
+                        result += `Volume range: 2.5 - 5.0 mL<br>`;
+                        result += `<em>2.5 mg once daily, increased to max 2.5 mg twice daily as required</em><br><br>`;
+                        break;
+                    case '2-5years':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 2-5 years<br>`;
+                        result += `Dose range: 2.5 - 5.0 mg daily<br>`;
+                        result += `Volume range: 2.5 - 5.0 mL<br>`;
+                        result += `<em>2.5 mg once daily, increased to max 5 mg daily in 1-2 divided doses</em><br><br>`;
+                        break;
+                    case '6-11years':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 6-11 years<br>`;
+                        result += `Dose range: 5.0 - 10.0 mg once daily<br>`;
+                        result += `Volume range: 5.0 - 10.0 mL<br>`;
+                        result += `<em>Depending on symptom severity</em><br><br>`;
+                        break;
+                    case '12-18years':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 12-18 years<br>`;
+                        result += `Dose range: 5.0 - 10.0 mg once daily<br>`;
+                        result += `Volume range: 5.0 - 10.0 mL<br>`;
+                        result += `<em>Depending on symptom severity; usual starting dose is 10 mg</em><br><br>`;
+                        break;
+                }
+            }
+            
+            // Reverse calculation
+            if (volume && volume > 0) {
+                const doseMg = volume; // 1mg/mL concentration
+                let possibleAges = [];
+                
+                // Check which age groups could match this dose
+                if (doseMg === 2.5) {
+                    possibleAges.push('6-11 months (2.5 mg daily)');
+                    possibleAges.push('12-23 months (2.5 mg daily - minimum)');
+                    possibleAges.push('2-5 years (2.5 mg daily - minimum)');
+                }
+                if (doseMg === 5.0) {
+                    possibleAges.push('12-23 months (5 mg daily - maximum)');
+                    possibleAges.push('2-5 years (5 mg daily - maximum)');
+                    possibleAges.push('6-11 years (5 mg daily - minimum)');
+                    possibleAges.push('12-18 years (5 mg daily - minimum)');
+                }
+                if (doseMg === 10.0) {
+                    possibleAges.push('6-11 years (10 mg daily - maximum)');
+                    possibleAges.push('12-18 years (10 mg daily - usual starting dose)');
+                }
+                if (doseMg > 2.5 && doseMg < 5.0) {
+                    possibleAges.push('12-23 months (within 2.5-5 mg range)');
+                    possibleAges.push('2-5 years (within 2.5-5 mg range)');
+                }
+                if (doseMg > 5.0 && doseMg < 10.0) {
+                    possibleAges.push('6-11 years (within 5-10 mg range)');
+                    possibleAges.push('12-18 years (within 5-10 mg range)');
+                }
+                
+                result += `<strong>Reverse calculation:</strong><br>`;
+                result += `Volume given: ${volume} mL<br>`;
+                result += `Dose: ${doseMg} mg<br>`;
+                
+                if (possibleAges.length > 0) {
+                    result += `<strong>Possible age groups:</strong><br>`;
+                    possibleAges.forEach(age => {
+                        result += `• ${age}<br>`;
+                    });
+                } else {
+                    result += `<em>Dose does not match standard cetirizine dosing guidelines</em>`;
+                }
+            }
+            
+            if (result) {
+                resultDiv.innerHTML = result;
+                resultDiv.style.display = 'block';
+            } else {
+                alert('Please select an age group or enter a volume for reverse calculation');
+            }
         }
 
         function calculateEyedrops() {
