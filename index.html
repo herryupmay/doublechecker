@@ -11,104 +11,7 @@
             box-sizing: border-box;
         }
 
-        function calculateCetirizine() {
-            const age = document.getElementById('cetirizine_age').value;
-            const volume = parseFloat(document.getElementById('cetirizine_volume').value);
-            const resultDiv = document.getElementById('cetirizine_result');
-            
-            let result = '';
-            
-            // Forward calculation
-            if (age) {
-                let doseInfo = '';
-                
-                switch(age) {
-                    case '6-11months':
-                        result += `<strong>Forward calculation:</strong><br>`;
-                        result += `Age group: 6-11 months<br>`;
-                        result += `Dose: 2.5 mg once daily<br>`;
-                        result += `Volume: 2.5 mL<br><br>`;
-                        break;
-                    case '12-23months':
-                        result += `<strong>Forward calculation:</strong><br>`;
-                        result += `Age group: 12-23 months<br>`;
-                        result += `Dose range: 2.5 - 5.0 mg daily<br>`;
-                        result += `Volume range: 2.5 - 5.0 mL<br>`;
-                        result += `<em>2.5 mg once daily, increased to max 2.5 mg twice daily as required</em><br><br>`;
-                        break;
-                    case '2-5years':
-                        result += `<strong>Forward calculation:</strong><br>`;
-                        result += `Age group: 2-5 years<br>`;
-                        result += `Dose range: 2.5 - 5.0 mg daily<br>`;
-                        result += `Volume range: 2.5 - 5.0 mL<br>`;
-                        result += `<em>2.5 mg once daily, increased to max 5 mg daily in 1-2 divided doses</em><br><br>`;
-                        break;
-                    case '6-11years':
-                        result += `<strong>Forward calculation:</strong><br>`;
-                        result += `Age group: 6-11 years<br>`;
-                        result += `Dose range: 5.0 - 10.0 mg once daily<br>`;
-                        result += `Volume range: 5.0 - 10.0 mL<br>`;
-                        result += `<em>Depending on symptom severity</em><br><br>`;
-                        break;
-                    case '12-18years':
-                        result += `<strong>Forward calculation:</strong><br>`;
-                        result += `Age group: 12-18 years<br>`;
-                        result += `Dose range: 5.0 - 10.0 mg once daily<br>`;
-                        result += `Volume range: 5.0 - 10.0 mL<br>`;
-                        result += `<em>Depending on symptom severity; usual starting dose is 10 mg</em><br><br>`;
-                        break;
-                }
-            }
-            
-            // Reverse calculation
-            if (volume && volume > 0) {
-                const doseMg = volume; // 1mg/mL concentration
-                let possibleAges = [];
-                
-                // Check which age groups could match this dose
-                if (doseMg === 2.5) {
-                    possibleAges.push('6-11 months (2.5 mg daily)');
-                    possibleAges.push('12-23 months (2.5 mg daily - minimum)');
-                    possibleAges.push('2-5 years (2.5 mg daily - minimum)');
-                }
-                if (doseMg === 5.0) {
-                    possibleAges.push('12-23 months (5 mg daily - maximum)');
-                    possibleAges.push('2-5 years (5 mg daily - maximum)');
-                    possibleAges.push('6-11 years (5 mg daily - minimum)');
-                    possibleAges.push('12-18 years (5 mg daily - minimum)');
-                }
-                if (doseMg === 10.0) {
-                    possibleAges.push('6-11 years (10 mg daily - maximum)');
-                    possibleAges.push('12-18 years (10 mg daily - usual starting dose)');
-                }
-                if (doseMg > 2.5 && doseMg < 5.0) {
-                    possibleAges.push('12-23 months (within 2.5-5 mg range)');
-                    possibleAges.push('2-5 years (within 2.5-5 mg range)');
-                }
-                if (doseMg > 5.0 && doseMg < 10.0) {
-                    possibleAges.push('6-11 years (within 5-10 mg range)');
-                    possibleAges.push('12-18 years (within 5-10 mg range)');
-                }
-                
-                result += `<strong>Reverse calculation:</strong><br>`;
-                result += `Volume given: ${volume} mL<br>`;
-                result += `Dose: ${doseMg} mg<br>`;
-                
-                if (possibleAges.length > 0) {
-                    result += `<strong>Possible age groups:</strong><br>`;
-                    possibleAges.forEach(age => {
-                        result += `• ${age}<br>`;
-                    });
-                } else {
-                    result += `<em>Dose does not match standard cetirizine dosing guidelines</em>`;
-                }
-            }
-            
-            if (result) {
-                resultDiv.innerHTML = result;
-                resultDiv.style.display = 'block';
-            }
-        }
+        
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -1029,6 +932,8 @@
                             <option value="macrogol">Macrogol 13.12g/sachet</option>
                             <option value="ferrous-sulphate">Ferrous sulphate 30mg/1mL</option>
                             <option value="colecalciferol">Colecalciferol (Vitamin D) 188mcg/mL</option>
+                            <option value="omeprazole-1">Omeprazole 1mg/mL</option>
+                            <option value="omeprazole-2">Omeprazole 2mg/mL</option>
                         </select>
                     </div>
 
@@ -1253,11 +1158,82 @@
                             <p><strong>Note:</strong> As an alternative for children aged 1–12 years, colecalciferol 1.25 mg (50,000 units) once every 2 to 3 months has been recommended by some paediatric endocrinologists.</p>
                             <p><strong>Concentration:</strong> 188 mcg/mL (10 mcg/drop)</p>
                             <a href="https://nzfchildren.org.nz/nzfc_5385" class="nzf-link" target="_blank">NZF Reference</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            </div>
+                            </div>
+                            <!-- Omeprazole 1mg/mL Form -->
+                            <div id="omeprazole-1-form" class="calculator-form">
+                                <h3>Omeprazole 1mg/mL Calculator</h3>
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>Patient category:</label>
+                                        <select id="omeprazole1_category">
+                                            <option value="">Select category...</option>
+                                            <option value="neonate">Neonate</option>
+                                            <option value="1month-2years">1 month - 2 years</option>
+                                            <option value="over2">2 years and over</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Child's weight (kg):</label>
+                                        <input type="number" id="omeprazole1_weight" step="0.1" min="0">
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Reverse calculation - Volume given (mL):</label>
+                                        <input type="number" id="omeprazole1_volume" step="0.1" min="0">
+                                    </div>
+                                </div>
+                                <button class="calculate-btn" onclick="calculateOmeprazole1()">Calculate</button>
+                                <div id="omeprazole1_result" class="calculation-result"></div>
+                                <div class="medication-info">
+                                    <h4>Dosing Information:</h4>
+                                    <p><strong>Neonate:</strong> 700 micrograms/kg once daily, increased if necessary after 7–14 days to 1.4 mg/kg;
+                                        some neonates may require up to 2.8 mg/kg once daily</p>
+                                    <p><strong>Child 1 month–2 years:</strong> 700 micrograms/kg once daily, increased if necessary to 3 mg/kg
+                                        (maximum 20 mg) once daily</p>
+                                    <p><strong>Body-weight 10–20 kg:</strong> 10 mg once daily increased if necessary to 20 mg once daily</p>
+                                    <p><strong>Body-weight over 20 kg:</strong> 20 mg once daily increased if necessary to 40 mg once daily</p>
+                                    <a href="https://nzfchildren.org.nz/nzfc_771" class="nzf-link" target="_blank">NZF Reference</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Omeprazole 2mg/mL Form -->
+                            <div id="omeprazole-2-form" class="calculator-form">
+                                <h3>Omeprazole 2mg/mL Calculator</h3>
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>Patient category:</label>
+                                        <select id="omeprazole2_category">
+                                            <option value="">Select category...</option>
+                                            <option value="neonate">Neonate</option>
+                                            <option value="1month-2years">1 month - 2 years</option>
+                                            <option value="over2">2 years and over</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Child's weight (kg):</label>
+                                        <input type="number" id="omeprazole2_weight" step="0.1" min="0">
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Reverse calculation - Volume given (mL):</label>
+                                        <input type="number" id="omeprazole2_volume" step="0.1" min="0">
+                                    </div>
+                                </div>
+                                <button class="calculate-btn" onclick="calculateOmeprazole2()">Calculate</button>
+                                <div id="omeprazole2_result" class="calculation-result"></div>
+                                <div class="medication-info">
+                                    <h4>Dosing Information:</h4>
+                                    <p><strong>Neonate:</strong> 700 micrograms/kg once daily, increased if necessary after 7–14 days to 1.4 mg/kg;
+                                        some neonates may require up to 2.8 mg/kg once daily</p>
+                                    <p><strong>Child 1 month–2 years:</strong> 700 micrograms/kg once daily, increased if necessary to 3 mg/kg
+                                        (maximum 20 mg) once daily</p>
+                                    <p><strong>Body-weight 10–20 kg:</strong> 10 mg once daily increased if necessary to 20 mg once daily</p>
+                                    <p><strong>Body-weight over 20 kg:</strong> 20 mg once daily increased if necessary to 40 mg once daily</p>
+                                    <a href="https://nzfchildren.org.nz/nzfc_771" class="nzf-link" target="_blank">NZF Reference</a>
+                                </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
 
         <!-- Insulin Calculator -->
         <div class="calculator-section">
@@ -1318,7 +1294,7 @@
 
         <!-- Footer -->
         <div style="background: #f1f8e9; padding: 20px; text-align: center; border-top: 2px solid #c8e6c9; color: #2d5016; font-size: 0.9em;">
-          <p> Built with ❤️ for pharmacy professionals.  <strong>Always verify dosing with current NZF guidelines and clinical judgment.</strong>  Last updated 04/08/2025 </p>    
+          <p> Built with ❤️ for pharmacy professionals.  <strong>Always verify dosing with current NZF guidelines and clinical judgment.</strong>  Last updated 05/08/2025 </p>    
         </div>
     </div>
 
@@ -2707,6 +2683,227 @@
             
             resultDiv.innerHTML = result;
             resultDiv.style.display = 'block';
+        }
+
+        function calculateOmeprazole1() {
+            const category = document.getElementById('omeprazole1_category').value;
+            const weight = parseFloat(document.getElementById('omeprazole1_weight').value);
+            const volume = parseFloat(document.getElementById('omeprazole1_volume').value);
+            const resultDiv = document.getElementById('omeprazole1_result');
+    
+            let result = '';
+    
+            if (category && weight && weight > 0) {
+                let minDose = 0, maxDose = 0, description = '';
+        
+                switch(category) {
+                    case 'neonate':
+                        minDose = weight * 0.7;
+                        maxDose = weight * 2.8;
+                        description = '0.7-2.8 mg/kg (700 micrograms to 2.8 mg/kg)';
+                        break;
+                    case '1month-2years':
+                        minDose = weight * 0.7;
+                        maxDose = Math.min(weight * 3, 20);
+                        description = '0.7 mg/kg to 3 mg/kg (maximum 20 mg)';
+                        break;
+                    case 'over2':
+                            if (weight >= 10 && weight <= 20) {
+                                minDose = 10;
+                                maxDose = 20;
+                                description = '10-20 mg (10-20kg body weight)';
+                            } else if (weight > 20) {
+                                minDose = 20;
+                                maxDose = 40;
+                                description = '20-40 mg (over 20kg body weight)';
+                            } else {
+                                result += '<div class="warning">Weight should be 10kg or over for children over 2 years</div>';
+                            }
+                            break;
+                }
+        
+                if (minDose > 0) {
+                    const minVolume = minDose / 1; // 1mg/mL concentration
+                    const maxVolume = maxDose / 1;
+                    result += `<strong>Forward calculation:</strong><br>`;
+                    result += `Category: ${category}<br>`;
+                    result += `Weight: ${weight} kg<br>`;
+                    result += `Dose range: ${minDose.toFixed(1)} - ${maxDose.toFixed(1)} mg (${description})<br>`;
+                    result += `Volume range: ${minVolume.toFixed(1)} - ${maxVolume.toFixed(1)} mL<br><br>`;
+                }
+            }
+    
+            if (volume && volume > 0) {
+                const doseMg = volume * 1; // 1mg/mL concentration
+                result += `<strong>Reverse calculation:</strong><br>`;
+                result += `Volume given: ${volume} mL<br>`;
+                result += `Dose: ${doseMg.toFixed(1)} mg<br>`;
+            }
+    
+            if (result) {
+                resultDiv.innerHTML = result;
+                resultDiv.style.display = 'block';
+            }
+        }
+
+        function calculateOmeprazole2() {
+            const category = document.getElementById('omeprazole2_category').value;
+            const weight = parseFloat(document.getElementById('omeprazole2_weight').value);
+            const volume = parseFloat(document.getElementById('omeprazole2_volume').value);
+            const resultDiv = document.getElementById('omeprazole2_result');
+    
+            let result = '';
+    
+            if (category && weight && weight > 0) {
+                let minDose = 0, maxDose = 0, description = '';
+        
+                switch(category) {
+                    case 'neonate':
+                        minDose = weight * 0.7;
+                        maxDose = weight * 2.8;
+                        description = '0.7-2.8 mg/kg (700 micrograms to 2.8 mg/kg)';
+                        break;
+                    case '1month-2years':
+                        minDose = weight * 0.7;
+                        maxDose = Math.min(weight * 3, 20);
+                        description = '0.7 mg/kg to 3 mg/kg (maximum 20 mg)';
+                        break;
+                    case 'over2':
+                            if (weight >= 10 && weight <= 20) {
+                                minDose = 10;
+                                maxDose = 20;
+                                description = '10-20 mg (10-20kg body weight)';
+                            } else if (weight > 20) {
+                                minDose = 20;
+                                maxDose = 40;
+                                description = '20-40 mg (over 20kg body weight)';
+                            } else {
+                                result += '<div class="warning">Weight should be 10kg or over for children over 2 years</div>';
+                            }
+                            break;
+                }
+        
+                if (minDose > 0) {
+                    const minVolume = minDose / 2; // 2mg/mL concentration
+                    const maxVolume = maxDose / 2;
+                    result += `<strong>Forward calculation:</strong><br>`;
+                    result += `Category: ${category}<br>`;
+                    result += `Weight: ${weight} kg<br>`;
+                    result += `Dose range: ${minDose.toFixed(1)} - ${maxDose.toFixed(1)} mg (${description})<br>`;
+                    result += `Volume range: ${minVolume.toFixed(1)} - ${maxVolume.toFixed(1)} mL<br><br>`;
+                }
+            }
+    
+            if (volume && volume > 0) {
+                const doseMg = volume * 2; // 2mg/mL concentration
+                result += `<strong>Reverse calculation:</strong><br>`;
+                result += `Volume given: ${volume} mL<br>`;
+                result += `Dose: ${doseMg.toFixed(1)} mg<br>`;
+            }
+    
+            if (result) {
+                resultDiv.innerHTML = result;
+                resultDiv.style.display = 'block';
+            }
+        }
+
+        function calculateCetirizine() {
+            const age = document.getElementById('cetirizine_age').value;
+            const volume = parseFloat(document.getElementById('cetirizine_volume').value);
+            const resultDiv = document.getElementById('cetirizine_result');
+            
+            let result = '';
+            
+            // Forward calculation
+            if (age) {
+                let doseInfo = '';
+                
+                switch(age) {
+                    case '6-11months':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 6-11 months<br>`;
+                        result += `Dose: 2.5 mg once daily<br>`;
+                        result += `Volume: 2.5 mL<br><br>`;
+                        break;
+                    case '12-23months':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 12-23 months<br>`;
+                        result += `Dose range: 2.5 - 5.0 mg daily<br>`;
+                        result += `Volume range: 2.5 - 5.0 mL<br>`;
+                        result += `<em>2.5 mg once daily, increased to max 2.5 mg twice daily as required</em><br><br>`;
+                        break;
+                    case '2-5years':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 2-5 years<br>`;
+                        result += `Dose range: 2.5 - 5.0 mg daily<br>`;
+                        result += `Volume range: 2.5 - 5.0 mL<br>`;
+                        result += `<em>2.5 mg once daily, increased to max 5 mg daily in 1-2 divided doses</em><br><br>`;
+                        break;
+                    case '6-11years':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 6-11 years<br>`;
+                        result += `Dose range: 5.0 - 10.0 mg once daily<br>`;
+                        result += `Volume range: 5.0 - 10.0 mL<br>`;
+                        result += `<em>Depending on symptom severity</em><br><br>`;
+                        break;
+                    case '12-18years':
+                        result += `<strong>Forward calculation:</strong><br>`;
+                        result += `Age group: 12-18 years<br>`;
+                        result += `Dose range: 5.0 - 10.0 mg once daily<br>`;
+                        result += `Volume range: 5.0 - 10.0 mL<br>`;
+                        result += `<em>Depending on symptom severity; usual starting dose is 10 mg</em><br><br>`;
+                        break;
+                }
+            }
+            
+            // Reverse calculation
+            if (volume && volume > 0) {
+                const doseMg = volume; // 1mg/mL concentration
+                let possibleAges = [];
+                
+                // Check which age groups could match this dose
+                if (doseMg === 2.5) {
+                    possibleAges.push('6-11 months (2.5 mg daily)');
+                    possibleAges.push('12-23 months (2.5 mg daily - minimum)');
+                    possibleAges.push('2-5 years (2.5 mg daily - minimum)');
+                }
+                if (doseMg === 5.0) {
+                    possibleAges.push('12-23 months (5 mg daily - maximum)');
+                    possibleAges.push('2-5 years (5 mg daily - maximum)');
+                    possibleAges.push('6-11 years (5 mg daily - minimum)');
+                    possibleAges.push('12-18 years (5 mg daily - minimum)');
+                }
+                if (doseMg === 10.0) {
+                    possibleAges.push('6-11 years (10 mg daily - maximum)');
+                    possibleAges.push('12-18 years (10 mg daily - usual starting dose)');
+                }
+                if (doseMg > 2.5 && doseMg < 5.0) {
+                    possibleAges.push('12-23 months (within 2.5-5 mg range)');
+                    possibleAges.push('2-5 years (within 2.5-5 mg range)');
+                }
+                if (doseMg > 5.0 && doseMg < 10.0) {
+                    possibleAges.push('6-11 years (within 5-10 mg range)');
+                    possibleAges.push('12-18 years (within 5-10 mg range)');
+                }
+                
+                result += `<strong>Reverse calculation:</strong><br>`;
+                result += `Volume given: ${volume} mL<br>`;
+                result += `Dose: ${doseMg} mg<br>`;
+                
+                if (possibleAges.length > 0) {
+                    result += `<strong>Possible age groups:</strong><br>`;
+                    possibleAges.forEach(age => {
+                        result += `• ${age}<br>`;
+                    });
+                } else {
+                    result += `<em>Dose does not match standard cetirizine dosing guidelines</em>`;
+                }
+            }
+            
+            if (result) {
+                resultDiv.innerHTML = result;
+                resultDiv.style.display = 'block';
+            }
         }
     </script>
 </body>
